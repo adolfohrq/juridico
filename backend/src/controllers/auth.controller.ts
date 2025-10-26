@@ -15,6 +15,8 @@ export class AuthController {
 
   static async login(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log('📨 Controller recebeu req.body:', JSON.stringify(req.body, null, 2));
+      console.log('📨 Content-Type:', req.headers['content-type']);
       const result = await AuthService.login(req.body);
       res.json(result);
     } catch (error) {

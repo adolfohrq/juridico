@@ -4,6 +4,16 @@ import { User } from "@/entities/User";
 import { Scale } from "lucide-react";
 
 /**
+ * Mapeia os cargos do backend (enum Prisma) para os nomes legíveis do frontend
+ */
+const CARGO_MAP = {
+  "DIRETOR_JURIDICO": "Diretor Jurídico",
+  "VICE_DIRETOR_JURIDICO": "Vice-Diretor Jurídico",
+  "CHEFE_DIVISAO": "Chefe de Divisão",
+  "TECNICO": "Técnico"
+};
+
+/**
  * ProtectedRoute Component
  * Protege rotas verificando autenticação e autorização por role
  *
@@ -47,8 +57,18 @@ export default function ProtectedRoute({ children, allowedRoles = [] }) {
       if (allowedRoles.length === 0) {
         setIsAuthorized(true);
       } else {
-        // Verifica se o role do usuário está na lista de permitidos
-        setIsAuthorized(allowedRoles.includes(currentUser.cargo));
+        // Mapeia o cargo do backend para o nome legível do frontend
+        const cargoLegivel = CARGO_MAP[currentUser.cargo] || currentUser.cargo;
+
+        // Verifica se o cargo do usuário está na lista de permitidos
+        setIsAuthorized(allowedRoles.includes(cargoLegivel));
+
+        console.log('🔐 Verificação de autorização:', {
+          cargoBackend: currentUser.cargo,
+          cargoMapeado: cargoLegivel,
+          rolesPermitidos: allowedRoles,
+          autorizado: allowedRoles.includes(cargoLegivel)
+        });
       }
     } catch (error) {
       console.error("Erro ao verificar autenticação:", error);

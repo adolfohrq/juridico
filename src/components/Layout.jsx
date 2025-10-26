@@ -32,6 +32,16 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
+/**
+ * Mapeia os cargos do backend (enum Prisma) para os nomes legíveis do frontend
+ */
+const CARGO_MAP = {
+  "DIRETOR_JURIDICO": "Diretor Jurídico",
+  "VICE_DIRETOR_JURIDICO": "Vice-Diretor Jurídico",
+  "CHEFE_DIVISAO": "Chefe de Divisão",
+  "TECNICO": "Técnico"
+};
+
 const navigationItems = [
   {
     title: "Dashboard",
@@ -135,9 +145,21 @@ export default function Layout({ children, currentPageName }) {
     navigate("/", { replace: true });
   };
 
-  const filteredNavigation = navigationItems.filter(item => 
-    user && item.roles.includes(user.cargo)
+  // Mapeia o cargo do backend para o formato legível antes de filtrar
+  const cargoLegivel = user ? (CARGO_MAP[user.cargo] || user.cargo) : null;
+
+  const filteredNavigation = navigationItems.filter(item =>
+    user && item.roles.includes(cargoLegivel)
   );
+
+  // Log para debug
+  if (user) {
+    console.log('🎯 Menu filtrado:', {
+      cargoBackend: user.cargo,
+      cargoMapeado: cargoLegivel,
+      itensVisiveis: filteredNavigation.map(i => i.title)
+    });
+  }
 
   // Loading state simplificado - ProtectedRoute já gerencia autenticação
   if (isLoading || !user) {

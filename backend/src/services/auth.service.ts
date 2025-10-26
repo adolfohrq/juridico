@@ -81,6 +81,11 @@ export class AuthService {
   }
 
   static async login(data: LoginDTO): Promise<TokenResponse> {
+    // Debug: ver o que está chegando
+    console.log('📧 Login data recebido:', JSON.stringify(data, null, 2));
+    console.log('📧 Email extraído:', data.email);
+    console.log('🔑 Password extraído:', data.password ? '***' : 'undefined');
+
     // Buscar usuário
     const user = await prisma.user.findUnique({
       where: { email: data.email },

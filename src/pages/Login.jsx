@@ -8,6 +8,9 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const from = location.state?.from?.pathname || "/dashboard";
 
   useEffect(() => {
@@ -28,11 +31,20 @@ export default function Login() {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
     setIsLoading(true);
+
     try {
-      // Executa o login (mock)
-      const user = await User.login();
+      // Validação básica
+      if (!email || !password) {
+        setError("Por favor, preencha email e senha");
+        return;
+      }
+
+      // Executa o login com email e senha
+      const user = await User.login(email, password);
 
       if (user) {
         // Login bem-sucedido, redireciona para a página original ou dashboard
@@ -42,7 +54,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
-      alert("Erro ao fazer login. Tente novamente.");
+      setError(error.message || "Erro ao fazer login. Verifique suas credenciais.");
     } finally {
       setIsLoading(false);
     }
@@ -137,35 +149,75 @@ export default function Login() {
             </div>
           )}
 
-          {/* Informação sobre o sistema mock */}
+          {/* Mensagem de erro */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
+          )}
+
+          {/* Informação sobre o sistema */}
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800 mb-2 font-semibold">
               Sistema em Modo Demonstração
             </p>
             <p className="text-xs text-blue-700">
-              Este é um ambiente de demonstração. Clique em "Entrar" para
-              acessar o sistema com um usuário de teste.
+              Use as credenciais: <strong>diretor@sigaj.com</strong> / <strong>senha123</strong>
             </p>
           </div>
 
-          {/* Botão de login */}
-          <Button
-            onClick={handleLogin}
-            disabled={isLoading}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-base font-semibold shadow-lg"
-          >
-            {isLoading ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Entrando...
-              </>
-            ) : (
-              <>
-                <LogIn className="w-5 h-5 mr-2" />
-                Entrar no Sistema
-              </>
-            )}
-          </Button>
+          {/* Formulário de login */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu-email@exemplo.com"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                disabled={isLoading}
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                Senha
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                disabled={isLoading}
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-base font-semibold shadow-lg"
+            >
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Entrando...
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-5 h-5 mr-2" />
+                  Entrar no Sistema
+                </>
+              )}
+            </Button>
+          </form>
 
           {/* Informações de perfis disponíveis */}
           <div className="mt-8 pt-6 border-t border-gray-200">
