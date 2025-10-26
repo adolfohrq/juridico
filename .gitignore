@@ -28,6 +28,10 @@ yarn-error.log*
 # NÃO ignore .env.production - ele é necessário como referência
 # mas nunca coloque secrets reais nele
 
+# Arquivos com secrets locais (não commitar)
+*_LOCAL.txt
+backend/.env
+
 # Vercel
 .vercel
 .vercel.json

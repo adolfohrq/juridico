@@ -61,7 +61,30 @@ Value: https://juridico-seven.vercel.app
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 APÓS ADICIONAR TODAS AS VARIÁVEIS:
+Variável 9 (GOOGLE OAUTH):
+Key: GOOGLE_CLIENT_ID
+Value: [VEJA O ARQUIVO CONFIGURACAO_RENDER_LOCAL.txt - NÃO COMMITAR NO GIT]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Variável 10 (GOOGLE OAUTH):
+Key: GOOGLE_CLIENT_SECRET
+Value: [VEJA O ARQUIVO CONFIGURACAO_RENDER_LOCAL.txt - NÃO COMMITAR NO GIT]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Variável 11 (GOOGLE OAUTH):
+Key: GOOGLE_CALLBACK_URL
+Value: https://juridico.onrender.com/api/auth/google/callback
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  IMPORTANTE: Credenciais do Google OAuth (vars 9 e 10) estão no arquivo
+CONFIGURACAO_RENDER_LOCAL.txt (não é commitado no Git por segurança)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 APÓS ADICIONAR TODAS AS 11 VARIÁVEIS:
 
 1. Clique em "Save Changes"
 2. O backend vai reiniciar automaticamente (aguarde ~2 minutos)
