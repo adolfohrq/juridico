@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "CargoEnum" ADD VALUE 'ADMINISTRADOR';

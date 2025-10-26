@@ -36,6 +36,7 @@ import {
  * Mapeia os cargos do backend (enum Prisma) para os nomes legíveis do frontend
  */
 const CARGO_MAP = {
+  "ADMINISTRADOR": "Administrador",
   "DIRETOR_JURIDICO": "Diretor Jurídico",
   "VICE_DIRETOR_JURIDICO": "Vice-Diretor Jurídico",
   "CHEFE_DIVISAO": "Chefe de Divisão",
@@ -47,39 +48,39 @@ const navigationItems = [
     title: "Dashboard",
     url: createPageUrl("Dashboard"),
     icon: LayoutDashboard,
-    roles: ["Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"],
+    roles: ["Administrador", "Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"],
     badge: "dashboard"
   },
   {
     title: "Pedidos",
     url: createPageUrl("Pedidos"),
     icon: FileText,
-    roles: ["Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"],
+    roles: ["Administrador", "Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"],
     badge: "pedidos"
   },
   {
     title: "Novo Parecer",
     url: createPageUrl("NovoParecer"),
     icon: Plus,
-    roles: ["Diretor Jurídico", "Vice-Diretor Jurídico"]
+    roles: ["Administrador", "Diretor Jurídico", "Vice-Diretor Jurídico"]
   },
   {
     title: "Usuários",
     url: createPageUrl("Usuarios"),
     icon: Users,
-    roles: ["Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"]
+    roles: ["Administrador", "Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"]
   },
   {
     title: "Relatórios",
     url: createPageUrl("Relatorios"),
     icon: BarChart3,
-    roles: ["Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão"]
+    roles: ["Administrador", "Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão"]
   },
   {
     title: "Atividades",
     url: createPageUrl("Atividades"),
     icon: Activity,
-    roles: ["Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"]
+    roles: ["Administrador", "Diretor Jurídico", "Vice-Diretor Jurídico", "Chefe de Divisão", "Técnico"]
   }
 ];
 

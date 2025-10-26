@@ -19,6 +19,18 @@ async function main() {
   // Hash da senha padrão
   const hashedPassword = await bcrypt.hash('senha123', 10);
 
+  // Criar usuário Administrador Master
+  const admin = await prisma.user.create({
+    data: {
+      email: 'admin@sigaj.com',
+      password: hashedPassword,
+      full_name: 'Administrador Master',
+      cargo: 'ADMINISTRADOR',
+      setor: 'Administração do Sistema',
+      ativo: true,
+    },
+  });
+
   // Criar usuários
   const diretor = await prisma.user.create({
     data: {
@@ -240,6 +252,7 @@ async function main() {
   console.log('\n🎉 Seed concluído com sucesso!\n');
   console.log('📧 Credenciais de teste:');
   console.log('-----------------------------------');
+  console.log('Admin:       admin@sigaj.com      (ACESSO TOTAL)');
   console.log('Diretor:     diretor@sigaj.com');
   console.log('Vice:        vice@sigaj.com');
   console.log('Chefe:       chefe@sigaj.com');

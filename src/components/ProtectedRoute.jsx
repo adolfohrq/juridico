@@ -7,6 +7,7 @@ import { Scale } from "lucide-react";
  * Mapeia os cargos do backend (enum Prisma) para os nomes legíveis do frontend
  */
 const CARGO_MAP = {
+  "ADMINISTRADOR": "Administrador",
   "DIRETOR_JURIDICO": "Diretor Jurídico",
   "VICE_DIRETOR_JURIDICO": "Vice-Diretor Jurídico",
   "CHEFE_DIVISAO": "Chefe de Divisão",

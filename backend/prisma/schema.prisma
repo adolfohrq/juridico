@@ -11,6 +11,7 @@ datasource db {
 }
 
 enum CargoEnum {
+  ADMINISTRADOR
   DIRETOR_JURIDICO
   VICE_DIRETOR_JURIDICO
   CHEFE_DIVISAO

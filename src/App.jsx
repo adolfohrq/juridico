@@ -33,6 +33,7 @@ function App() {
           element={
             <ProtectedRoute
               allowedRoles={[
+                "Administrador",
                 "Diretor Jurídico",
                 "Vice-Diretor Jurídico",
                 "Chefe de Divisão",
@@ -52,6 +53,7 @@ function App() {
           element={
             <ProtectedRoute
               allowedRoles={[
+                "Administrador",
                 "Diretor Jurídico",
                 "Vice-Diretor Jurídico",
                 "Chefe de Divisão",
@@ -70,7 +72,7 @@ function App() {
           path="/novoparecer"
           element={
             <ProtectedRoute
-              allowedRoles={["Diretor Jurídico", "Vice-Diretor Jurídico"]}
+              allowedRoles={["Administrador", "Diretor Jurídico", "Vice-Diretor Jurídico"]}
             >
               <Layout currentPageName="NovoParecer">
                 <NovoParecer />
@@ -85,6 +87,7 @@ function App() {
           element={
             <ProtectedRoute
               allowedRoles={[
+                "Administrador",
                 "Diretor Jurídico",
                 "Vice-Diretor Jurídico",
                 "Chefe de Divisão",
@@ -104,6 +107,7 @@ function App() {
           element={
             <ProtectedRoute
               allowedRoles={[
+                "Administrador",
                 "Diretor Jurídico",
                 "Vice-Diretor Jurídico",
                 "Chefe de Divisão"
@@ -122,6 +126,7 @@ function App() {
           element={
             <ProtectedRoute
               allowedRoles={[
+                "Administrador",
                 "Diretor Jurídico",
                 "Vice-Diretor Jurídico",
                 "Chefe de Divisão",
