@@ -15,14 +15,14 @@ export class AuthService {
 
     const accessToken = jwt.sign(
       payload,
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+      (process.env.JWT_SECRET || 'your-secret-key') as any,
+      { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as any }
     );
 
     const refreshToken = jwt.sign(
       payload,
-      process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key',
-      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+      (process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key') as any,
+      { expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || '7d') as any }
     );
 
     return { accessToken, refreshToken };
