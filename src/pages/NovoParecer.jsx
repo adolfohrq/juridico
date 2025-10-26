@@ -18,6 +18,26 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+/**
+ * Mapeia os cargos do backend (enum Prisma) para os nomes legíveis do frontend
+ */
+const CARGO_MAP = {
+  "DIRETOR_JURIDICO": "Diretor Jurídico",
+  "VICE_DIRETOR_JURIDICO": "Vice-Diretor Jurídico",
+  "CHEFE_DIVISAO": "Chefe de Divisão",
+  "TECNICO": "Técnico"
+};
+
+/**
+ * Mapeia prioridades do frontend para o backend (enum)
+ */
+const PRIORIDADE_MAP = {
+  "Baixa": "BAIXA",
+  "Média": "MEDIA",
+  "Alta": "ALTA",
+  "Urgente": "URGENTE"
+};
+
 export default function NovoParecer() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -25,7 +45,7 @@ export default function NovoParecer() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     titulo: "",
     descricao: "",
@@ -44,31 +64,35 @@ export default function NovoParecer() {
     try {
       const currentUser = await User.me();
 
-      // Se o usuário não tem cargo definido, definir um padrão
-      if (!currentUser.cargo) {
-        await User.updateMyUserData({
-          cargo: "Diretor Jurídico", // Para demonstração, definir como Diretor
-          ativo: true,
-          setor: "Direção Jurídica"
-        });
-        currentUser.cargo = "Diretor Jurídico";
-      }
+      // Mapear cargo do backend para frontend
+      const cargoLegivel = CARGO_MAP[currentUser.cargo] || currentUser.cargo;
+
+      console.log('👤 Usuário carregado:', {
+        nome: currentUser.full_name,
+        cargoBackend: currentUser.cargo,
+        cargoMapeado: cargoLegivel
+      });
 
       // Verificar se é Diretor ou Vice-Diretor
-      if (!["Diretor Jurídico", "Vice-Diretor Jurídico"].includes(currentUser.cargo)) {
+      if (!["Diretor Jurídico", "Vice-Diretor Jurídico"].includes(cargoLegivel)) {
         navigate(createPageUrl("Dashboard"));
         return;
       }
 
       setUser(currentUser);
-      
+
       // Buscar todos os usuários para filtrar chefes
       const allUsers = await User.list();
-      const chefesDivisao = allUsers.filter(u => 
-        u.cargo === "Chefe de Divisão" && u.ativo !== false
-      );
+
+      // Filtrar Chefes de Divisão (usar enum do backend)
+      const chefesDivisao = allUsers.filter(u => {
+        const cargoUsuario = CARGO_MAP[u.cargo] || u.cargo;
+        return cargoUsuario === "Chefe de Divisão" && u.ativo !== false;
+      });
+
+      console.log('👥 Chefes encontrados:', chefesDivisao.length);
       setChefes(chefesDivisao);
-      
+
     } catch (error) {
       console.error("Error loading data:", error);
       setMessage({ type: "error", text: "Erro ao carregar dados iniciais." });
@@ -85,53 +109,48 @@ export default function NovoParecer() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.titulo || !formData.descricao) {
       setMessage({ type: "error", text: "Por favor, preencha todos os campos obrigatórios." });
       return;
     }
 
     setIsSaving(true);
-    
+
     try {
-      // Criar o pedido
-      const novoPedido = await Pedido.create({
-        ...formData,
-        criado_por_id: user.id,
-        atribuido_para_id: formData.atribuir_para || null,
-        status: "Pendente"
-      });
+      // Preparar dados para enviar ao backend
+      const pedidoData = {
+        titulo: formData.titulo,
+        descricao: formData.descricao,
+        tipo_documento: formData.tipo_documento,
+        prioridade: PRIORIDADE_MAP[formData.prioridade], // Converter para enum
+        prazo_conclusao: formData.prazo_conclusao ? formData.prazo_conclusao.toISOString() : null,
+        atribuido_para_id: formData.atribuir_para ? parseInt(formData.atribuir_para) : null,
+        observacoes: formData.observacoes || null
+      };
 
-      // Criar atribuição inicial se foi especificada
-      if (formData.atribuir_para) {
-        await Atribuicao.create({
-          pedido_id: novoPedido.id,
-          usuario_id: formData.atribuir_para,
-          papel: "Revisor",
-          atribuido_por_id: user.id,
-          comentario: `Pedido atribuído para análise inicial`
-        });
-      }
+      console.log('📝 Criando pedido:', pedidoData);
 
-      // Registrar log de criação
-      await LogAtividade.create({
-        pedido_id: novoPedido.id,
-        usuario_id: user.id,
-        acao: "Criado",
-        comentario: `Novo parecer criado: ${formData.titulo}`,
-        status_novo: "Pendente"
-      });
+      // Criar o pedido via API
+      const novoPedido = await Pedido.create(pedidoData);
+
+      console.log('✅ Pedido criado:', novoPedido);
 
       setMessage({ type: "success", text: "Parecer criado com sucesso!" });
+
+      // Redirecionar após 1.5 segundos
       setTimeout(() => {
-        navigate(createPageUrl("Dashboard"));
-      }, 2000);
-      
+        navigate(createPageUrl("Pedidos"));
+      }, 1500);
+
     } catch (error) {
       console.error("Error creating pedido:", error);
-      setMessage({ type: "error", text: "Erro ao criar parecer. Tente novamente." });
+
+      // Mostrar mensagem de erro mais detalhada
+      const errorMessage = error.response?.data?.error || error.message || "Erro ao criar parecer. Tente novamente.";
+      setMessage({ type: "error", text: errorMessage });
     }
-    
+
     setIsSaving(false);
   };
 
