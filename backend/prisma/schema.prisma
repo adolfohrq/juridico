@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CargoEnum {
+  DIRETOR_JURIDICO
+  VICE_DIRETOR_JURIDICO
+  CHEFE_DIVISAO
+  TECNICO
+}
+
+enum StatusPedidoEnum {
+  PENDENTE
+  EM_ANALISE
+  EM_EXECUCAO
+  AGUARDANDO_APROVACAO
+  APROVADO
+  DEVOLVIDO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum PrioridadeEnum {
+  BAIXA
+  MEDIA
+  ALTA
+  URGENTE
+}
+
+enum TipoAtividadeEnum {
+  CRIACAO
+  ATUALIZACAO
+  APROVACAO
+  DEVOLUCAO
+  ATRIBUICAO
+  COMENTARIO
+  UPLOAD_DOCUMENTO
+  CONCLUSAO
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String?   // Null para login com Google
+  full_name        String
+  cargo            CargoEnum
+  setor            String?
+  ativo            Boolean   @default(true)
+  google_id        String?   @unique
+  avatar_url       String?
+  refresh_token    String?
+
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  // Relações
+  pedidos_criados  Pedido[]  @relation("CriadorPedido")
+  atribuicoes      Atribuicao[]
+  logs_atividade   LogAtividade[]
+  comentarios      Comentario[]
+
+  @@map("users")
+}
+
+model Pedido {
+  id               Int               @id @default(autoincrement())
+  titulo           String
+  descricao        String
+  status           StatusPedidoEnum  @default(PENDENTE)
+  prioridade       PrioridadeEnum    @default(MEDIA)
+  prazo            DateTime?
+  numero_processo  String?           @unique
+
+  criado_por_id    Int
+  criado_por       User              @relation("CriadorPedido", fields: [criado_por_id], references: [id])
+
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
+  concluido_em     DateTime?
+
+  // Relações
+  atribuicoes      Atribuicao[]
+  documentos       Documento[]
+  logs_atividade   LogAtividade[]
+  comentarios      Comentario[]
+
+  @@map("pedidos")
+}
+
+model Atribuicao {
+  id               Int       @id @default(autoincrement())
+  pedido_id        Int
+  user_id          Int
+  cargo_responsavel CargoEnum
+  observacao       String?
+
+  pedido           Pedido    @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [user_id], references: [id])
+
+  created_at       DateTime  @default(now())
+
+  @@unique([pedido_id, user_id])
+  @@map("atribuicoes")
+}
+
+model Documento {
+  id               Int       @id @default(autoincrement())
+  pedido_id        Int
+  nome_arquivo     String
+  tipo             String
+  tamanho          Int       // em bytes
+  url              String    // URL do Supabase Storage ou path local
+
+  pedido           Pedido    @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+
+  created_at       DateTime  @default(now())
+
+  @@map("documentos")
+}
+
+model LogAtividade {
+  id               Int               @id @default(autoincrement())
+  pedido_id        Int?
+  user_id          Int
+  tipo             TipoAtividadeEnum
+  descricao        String
+  metadata         String?           // JSON com dados adicionais
+
+  pedido           Pedido?           @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  user             User              @relation(fields: [user_id], references: [id])
+
+  created_at       DateTime          @default(now())
+
+  @@map("logs_atividade")
+}
+
+model Comentario {
+  id               Int       @id @default(autoincrement())
+  pedido_id        Int
+  user_id          Int
+  conteudo         String
+
+  pedido           Pedido    @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [user_id], references: [id])
+
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  @@map("comentarios")
+}

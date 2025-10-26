@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tail:*)",
+      "Bash(cd:*)",
+      "Bash(npm run build:*)",
+      "Bash(cp:*)",
+      "Bash(dir /s /b \"c:\\Users\\adolf\\OneDrive\\Área de Trabalho\\Claude\\juri\")",
+      "Bash(dir)",
+      "Read(//c/Users/adolf/OneDrive/Área de Trabalho/Claude/**)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
